@@ -1,0 +1,155 @@
+{
+    "parameters": {
+        "siteName": {
+            "type": "string"
+        },
+        "servicePlanName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "West US",
+            "allowedValues": [
+                "West US",
+                "West Europe",
+                "Southeast Asia"
+            ]
+        },
+        "sku": {
+            "type": "string",
+            "defaultValue": "S2",
+            "allowedValues": [
+                "B1",
+                "B2",
+                "B3",
+                "S1",
+                "S2",
+                "S3"
+            ]
+        },
+        "dockerRegistryImageName": {
+            "type": "string",
+            "defaultValue": "fanjeffrey/wordpress:4.7.2"
+        },
+        "wordPressDatabaseHost": {
+            "type": "string",
+            "defaultValue": "127.0.0.1",
+            "metadata": {
+                "description": "WordPress Database Host"
+            }
+        },
+        "wordPressDatabaseName": {
+            "type": "string",
+            "defaultValue": "wordpress",
+            "metadata": {
+                "description": "WordPress Database Name"
+            }
+        },
+        "wordPressDatabaseUsername": {
+            "type": "string",
+            "defaultValue": "wordpress",
+            "metadata": {
+                "description": "WordPress Database Username"
+            }
+        },
+        "wordPressDatabasePassword": {
+            "type": "securestring",
+            "defaultValue": "MS173m_QN",
+            "metadata": {
+                "description": "WordPress Database Password"
+            }
+        },
+        "wordPressTablePrefix": {
+            "type": "string",
+            "defaultValue": "wp_",
+            "metadata": {
+                "description": "WordPress Table Prefix"
+            }
+        },
+        "phpMyAdminUsername": {
+            "type": "string",
+            "defaultValue": "phpmyadmin",
+            "metadata": {
+                "description": "phpMyAdmin Username"
+            }
+        },
+        "phpMyAdminPassword": {
+            "type": "securestring",
+            "defaultValue": "MS173m_QN",
+            "metadata": {
+                "description": "phpMyAdmin Password"
+            }
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Web/sites",
+            "name": "[parameters('siteName')]",
+            "properties": {
+                "siteConfig": {
+                    "appSettings": [
+                        {
+                            "name": "DOCKER_CUSTOM_IMAGE_NAME",
+                            "value": "[parameters('dockerRegistryImageName')]"
+                        },
+                        {
+                            "name": "WORDPRESS_DB_HOST",
+                            "value": "[parameters('wordPressDatabaseHost')]"
+                        },
+                        {
+                            "name": "WORDPRESS_DB_NAME",
+                            "value": "[parameters('wordPressDatabaseName')]"
+                        },
+                        {
+                            "name": "WORDPRESS_DB_USERNAME",
+                            "value": "[parameters('wordPressDatabaseUsername')]"
+                        },
+                        {
+                            "name": "WORDPRESS_DB_PASSWORD",
+                            "value": "[parameters('wordPressDatabasePassword')]"
+                        },
+                        {
+                            "name": "WORDPRESS_DB_TABLE_NAME_PREFIX",
+                            "value": "[parameters('wordPressTablePrefix')]"
+                        },
+                        {
+                            "name": "PHPMYADMIN_USERNAME",
+                            "value": "[parameters('phpMyAdminUsername')]"
+                        },
+                        {
+                            "name": "PHPMYADMIN_PASSWORD",
+                            "value": "[parameters('phpMyAdminPassword')]"
+                        }
+                    ]
+                },
+                "name": "[parameters('siteName')]",
+                "serverFarmId": "[parameters('servicePlanName')]",
+                "hostingEnvironment": ""
+            },
+            "apiVersion": "2016-03-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [
+                "[parameters('servicePlanName')]"
+            ]
+        },
+        {
+            "apiVersion": "2016-09-01",
+            "name": "[parameters('servicePlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "location": "[parameters('location')]",
+            "properties": {
+                "name": "[parameters('servicePlanName')]",
+                "workerSizeId": "1",
+                "reserved": true,
+                "numberOfWorkers": "1",
+                "hostingEnvironment": ""
+            },
+            "sku": {
+                "Name": "[parameters('sku')]"
+            },
+            "kind": "linux"
+        }
+    ],
+    "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0"
+}
