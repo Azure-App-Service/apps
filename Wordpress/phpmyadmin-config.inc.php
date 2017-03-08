@@ -21,4 +21,8 @@ $cfg['DefaultLang'] = 'en';
 $cfg['ServerDefault'] = 1;
 $cfg['UploadDir'] = '';
 $cfg['SaveDir'] = '';
+
+/* https://boss.vvc.edu/database_access/doc/html/config.html#cfg_CheckConfigurationPermissions */
+$cfg['CheckConfigurationPermissions']=false;
+
 ?>
