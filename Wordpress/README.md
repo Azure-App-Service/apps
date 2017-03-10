@@ -6,7 +6,7 @@ A WordPress Docker image which is built with the Dockerfile under this repo can 
 This docker image currently contains the following components:
 
 1. WordPress    **4.7.2**
-2. PHP          **7.1.1**
+2. PHP          **7.1.2**
 3. Apache HTTPD **2.4.25**
 4. MariaDB      **10.0+**
 5. Redis        **3.2.8**
@@ -82,7 +82,7 @@ The builtin MariaDB server uses port 3306.
 ## The Builtin phpMyAdmin Site
 If you're using the builtin MariaDB, you can access the builtin phpMyAdmin site with a URL like below:
 
-**http://<hostname>[port]/phpmyadmin**
+**http://hostname[:port]/phpmyadmin**
 
 ## The Builtin Redis Cache Server
 If you're using the builtin MariaDB, you can leverage the builtin Redis cache server with WordPress cache plugins. For example, the [Redis Object Cache](https://wordpress.org/plugins/redis-cache/).

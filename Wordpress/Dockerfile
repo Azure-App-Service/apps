@@ -323,5 +323,6 @@ RUN set -ex \
 # final
 # =====
 COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
 EXPOSE 80
 ENTRYPOINT ["entrypoint.sh"]
