@@ -1,3 +1,0 @@
-* * * * * /usr/bin/php7.0 /var/www/magento/bin/magento cron:run | grep -v "Ran jobs by schedule" >> /var/www/magento/var/log/magento.cron.log
-* * * * * /usr/bin/php7.0 /var/www/magento/update/cron.php >> /var/www/magento/var/log/update.cron.log
-* * * * * /usr/bin/php7.0 /var/www/magento/bin/magento setup:cron:run >> /var/www/magento/var/log/setup.cron.log
