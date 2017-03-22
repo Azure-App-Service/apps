@@ -29,7 +29,7 @@
         },
         "dockerRegistryImageName": {
             "type": "string",
-            "defaultValue": "fanjeffrey/wordpress:4.7.2"
+            "defaultValue": "appsvc/apps:wordpress"
         },
         "wordPressDatabaseHost": {
             "type": "string",
