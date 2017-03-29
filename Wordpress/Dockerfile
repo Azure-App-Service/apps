@@ -2,7 +2,7 @@
 # Dockerfile for WordPress
 #
 FROM ubuntu:16.04
-LABEL maintainer "v-jifan@microsoft.com"
+MAINTAINER Azure App Service Container Images <appsvc-images@microsoft.com>
 
 
 # ========
@@ -276,8 +276,8 @@ RUN set -ex \
 	&& chown www-data:www-data /var/lib/php/sessions \
 	##
 	&& test ! -d /var/www && mkdir -p /var/www \
-        && echo '<html><head><meta http-equiv="refresh" content="30" /><meta http-equiv="cache-control" content="no-cache" /><title>Installing WordPress</title></head><body>Installing WordPress ... This could be done in minutes. Please refresh your browser later.</body></html>' > /var/www/index.html \
-        && chown -R www-data:www-data /var/www \
+	&& echo '<html><head><meta http-equiv="refresh" content="30" /><meta http-equiv="pragma" content="no-cache" /><meta http-equiv="cache-control" content="no-cache" /><title>Installing WordPress</title></head><body>Installing WordPress ... This could be done in minutes. Please refresh your browser later.</body></html>' > /var/www/index.html \
+	&& chown -R www-data:www-data /var/www \
 	##
 	&& ln -s $WORDPRESS_HOME /var/www/wordpress \
 	##
