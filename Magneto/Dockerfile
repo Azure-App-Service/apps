@@ -2,7 +2,7 @@
 # Dockerfile for Magento CE
 #
 FROM ubuntu:16.04
-LABEL maintainer "appgal@microsoft.com"
+MAINTAINER Azure App Service Container Images <appsvc-images@microsoft.com>
 
 
 # ========

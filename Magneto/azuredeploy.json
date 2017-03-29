@@ -27,7 +27,7 @@
         },
         "dockerRegistryImageName": {
             "type": "string",
-            "defaultValue": "fanjeffrey/magento:ce-2.1.5"
+            "defaultValue": "appsvc/apps:magento"
         },
         "magentoAdminUser": {
             "type": "string",
