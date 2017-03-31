@@ -29,11 +29,11 @@
         },
         "dockerRegistryImageName": {
             "type": "string",
-            "defaultValue": "fanjeffrey/wordpress:4.7.2"
+            "defaultValue": "appsvc/apps:wordpress"
         },
         "wordPressDatabaseHost": {
             "type": "string",
-            "defaultValue": "127.0.0.1",
+            "defaultValue": "localhost",
             "metadata": {
                 "description": "WordPress Database Host"
             }
@@ -109,7 +109,7 @@
                             "value": "[parameters('wordPressDatabasePassword')]"
                         },
                         {
-                            "name": "WORDPRESS_DB_TABLE_NAME_PREFIX",
+                            "name": "WORDPRESS_DB_PREFIX",
                             "value": "[parameters('wordPressTablePrefix')]"
                         },
                         {

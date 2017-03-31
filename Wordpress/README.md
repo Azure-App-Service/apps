@@ -5,7 +5,7 @@ A WordPress Docker image which is built with the Dockerfile under this repo can 
 ## Components
 This docker image currently contains the following components:
 
-1. WordPress    **4.7.2**
+1. WordPress    **4.7.3**
 2. PHP          **7.1.2**
 3. Apache HTTPD **2.4.25**
 4. MariaDB      **10.0+**
@@ -29,7 +29,7 @@ You can specify the following environment variables when deploying the image to 
 
 Name | Default Value
 ---- | -------------
-WORDPRESS_DB_HOST | 127.0.0.1
+WORDPRESS_DB_HOST | localhost
 WORDPRESS_DB_NAME | wordpress
 WORDPRESS_DB_USERNAME | wordpress
 WORDPRESS_DB_PASSWORD | MS173m_QN
@@ -49,7 +49,7 @@ At the SETUP page, as shown below, you can change default values of these enviro
 ### Running on Docker engine's host
 The **docker run** command below will get you a container that has a WordPress site connected to the builtin MariaDB, and has the builtin Redis cache server started, and has the builtin phpMyAdmin site enabled.
 ```
-docker run -d -t -p 80:80 fanjeffrey/wordpress:4.7.2
+docker run -d -t -p 80:80 fanjeffrey/wordpress:latest
 ```
 
 The command below will connect the WordPress site within your Docker container to an Azure ClearDb.
@@ -60,20 +60,20 @@ docker run -d -t -p 80:80 \
     -e "WORDPRESS_DB_USERNAME=<your_db_username>" \
     -e "WORDPRESS_DB_PASSWORD=<your_db_password>" \
     -e "WORDPRESS_DB_TABLE_NAME_PREFIX=<your_table_name_prefix>" \
-    fanjeffrey/wordpress:4.7.2
+    fanjeffrey/wordpress:latest
 ```
 
-When you use 127.0.0.1 as the database host, you can customize phpMyAdmin username and password.
+When you use "localhost" as the database host, you can customize phpMyAdmin username and password.
 ```
 docker run -d -t -p 80:80 \
-    -e "WORDPRESS_DB_HOST=127.0.0.1" \
+    -e "WORDPRESS_DB_HOST=localhost" \
     -e "WORDPRESS_DB_NAME=<your_db_name>" \
     -e "WORDPRESS_DB_USERNAME=<your_db_username>" \
     -e "WORDPRESS_DB_PASSWORD=<your_db_password>" \
     -e "WORDPRESS_DB_TABLE_NAME_PREFIX=<your_table_name_prefix>" \
     -e "PHPMYADMIN_USERNAME=<your_phpmyadmin_username>" \
     -e "PHPMYADMIN_PASSWORD=<your_phpmyadmin_password>" \
-    fanjeffrey/wordpress:4.7.2
+    fanjeffrey/wordpress:latest
 ```
 
 ## The Builtin MariaDB server

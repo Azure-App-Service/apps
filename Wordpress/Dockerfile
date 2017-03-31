@@ -2,7 +2,7 @@
 # Dockerfile for WordPress
 #
 FROM ubuntu:16.04
-LABEL maintainer "v-jifan@microsoft.com"
+MAINTAINER Azure App Service Container Images <appsvc-images@microsoft.com>
 
 
 # ========
@@ -17,8 +17,12 @@ ENV HTTPD_SOURCE "/usr/src/httpd"
 ENV HTTPD_HOME "/usr/local/httpd"
 ENV HTTPD_CONF_DIR "$HTTPD_HOME/conf"
 ENV HTTPD_CONF_FILE "$HTTPD_CONF_DIR/httpd.conf"
-ENV HTTPD_LOG_DIR="/var/log/httpd"
+ENV HTTPD_LOG_DIR "/home/LogFiles/httpd"
 ENV PATH "$HTTPD_HOME/bin":$PATH
+
+# mariadb
+ENV MARIADB_DATA_DIR "/home/data/mysql"
+ENV MARIADB_LOG_DIR "/home/LogFiles/mysql"
 
 # php
 ENV PHP_VERSION "7.1.2"
@@ -30,11 +34,6 @@ ENV PHP_CONF_DIR "$PHP_HOME/etc"
 ENV PHP_CONF_DIR_SCAN "$PHP_CONF_DIR/conf.d"
 ENV PATH "$PHP_HOME/bin":$PATH
 
-# mariadb
-ENV MARIADB_DATA_DIR="/var/lib/mysql"
-ENV MARIADB_LOG_DIR="/var/log/mysql"
-ENV MARIADB_DATA_DIR_TEMP="/tmp/mariadb"
-
 # redis
 ENV REDIS_VERSION "3.2.8"
 ENV REDIS_DOWNLOAD_URL "http://download.redis.io/releases/redis-$REDIS_VERSION.tar.gz"
@@ -43,38 +42,39 @@ ENV REDIS_SOURCE "/usr/src/redis"
 ENV REDIS_HOME "/usr/local/redis"
 ENV PATH "$REDIS_HOME/bin":$PATH
 
-# wordpress
-ENV WORDPRESS_VERSION "4.7.2"
-ENV WORDPRESS_DOWNLOAD_URL "https://wordpress.org/wordpress-$WORDPRESS_VERSION.tar.gz"
-ENV WORDPRESS_SHA1 "7b687f1af589c337124e6247229af209ec1d52c3"
-ENV WORDPRESS_SOURCE "/usr/src/wordpress"
-ENV WORDPRESS_HOME "/var/www/wordpress"
-
 # phpMyAdmin
 ENV PHPMYADMIN_VERSION "4.6.6"
 ENV PHPMYADMIN_DOWNLOAD_URL "https://files.phpmyadmin.net/phpMyAdmin/$PHPMYADMIN_VERSION/phpMyAdmin-$PHPMYADMIN_VERSION-all-languages.tar.gz"
 ENV PHPMYADMIN_SHA256 "54086600558613b31c4daddf4ae58fbc1c252a2b8e3e6fae12f851f78677d72e"
 ENV PHPMYADMIN_SOURCE "/usr/src/phpmyadmin"
-ENV PHPMYADMIN_HOME "/var/www/phpmyadmin"
+ENV PHPMYADMIN_HOME "/home/phpmyadmin"
 
+# wordpress
+ENV WORDPRESS_VERSION "4.7.3"
+ENV WORDPRESS_DOWNLOAD_URL "https://wordpress.org/wordpress-$WORDPRESS_VERSION.tar.gz"
+ENV WORDPRESS_SHA1 "35adcd8162eae00d5bc37f35344fdc06b22ffc98"
+ENV WORDPRESS_SOURCE "/usr/src/wordpress"
+ENV WORDPRESS_HOME "/home/site/wwwroot"
+
+#
 ENV DOCKER_BUILD_HOME "/dockerbuild"
 
 
 # ====================
 # Download and Install
-# 1. essential tools
+# 1. tools
 # 2. apache httpd
-# 3. php
-# 4. mariadb
+# 3. mariadb
+# 4. php
 # 5. redis
-# 6. wordpress
-# 7. phpmyadmin
+# 6. phpmyadmin
+# 7. wordpress
 # ====================
 
 WORKDIR $DOCKER_BUILD_HOME
 RUN set -ex \
 	# ------------------
-	# 1. essential tools
+	# 1. tools
 	# ------------------
 	&& tools=" \
 		g++ \
@@ -122,6 +122,7 @@ RUN set -ex \
 		--enable-ssl \
 	&& make -j "$(nproc)" \
 	&& make install \
+	&& make clean \
 	## clean up
 	&& rm -rf $HTTPD_SOURCE \
 		$HTTPD_HOME/man \
@@ -129,8 +130,15 @@ RUN set -ex \
 	&& rm $DOCKER_BUILD_HOME/httpd.tar.gz \
 	&& apt-get purge -y -V -o APT::AutoRemove::RecommendsImportant=false --auto-remove $httpdBuildtimeDeps \
 
+	# ----------
+	# 3. mariadb
+	# ----------
+	&& apt-get update \
+	&& DEBIAN_FRONTEND=noninteractive apt-get install mariadb-server -y -V --no-install-recommends \
+	&& rm -r /var/lib/apt/lists/* \
+
 	# ------
-	# 3. php
+	# 4. php
 	# ------
 	### see http://php.net/manual/en/install.unix.apache2.php
 	### see http://linuxfromscratch.org/blfs/view/svn/general/php.html
@@ -139,12 +147,12 @@ RUN set -ex \
 	## buildtime deps
 	### libbz2-dev >> --with-bz2 >> [phpmyadmin] Bzip2 compression and decompression requires functions (bzopen, bzcompress) which are unavailable on this system.
 	### libgmp-dev >> --with-gmp
-        ### libicu-dev >> --enable-intl
+	### libicu-dev >> --enable-intl
 	### libldap2-dev >> --with-ldap
 	&& phpBuildtimeDeps="\
 		libbz2-dev \
 		libgmp-dev \
-                libicu-dev \
+		libicu-dev \
 		libldap2-dev \
 		libssl-dev \
 		libxml2-dev \
@@ -156,7 +164,7 @@ RUN set -ex \
 	&& phpRuntimeDeps=" \
 		libcurl4-openssl-dev \
 		libjpeg-dev \
-                libpng12-dev \
+		libpng12-dev \
 		libxml2 \
 	" \
 	&& apt-get update \
@@ -193,23 +201,17 @@ RUN set -ex \
 		--with-gmp \
 		--with-ldap \
 		### see http://php.net/manual/en/mysqlnd.overview.php
-                ### see http://php.net/manual/en/mysqlinfo.api.choosing.php
+		### see http://php.net/manual/en/mysqlinfo.api.choosing.php
 		--with-mysqli=mysqlnd \
 		--with-openssl \
 	&& make -j "$(nproc)" \
-	&& make install \	
+	&& make install \
+	&& make clean \
 	## clean up
 	&& rm -rf $PHP_SOURCE \
 	&& rm -rf $PHP_HOME/php/man \
 	&& rm $DOCKER_BUILD_HOME/php.tar.gz \
 	&& apt-get purge -y -V -o APT::AutoRemove::RecommendsImportant=false --auto-remove $phpBuildtimeDeps \
-
-	# ----------
-	# 4. mariadb
-	# ----------
-	&& apt-get update \
-	&& DEBIAN_FRONTEND=noninteractive apt-get install mariadb-server -y -V --no-install-recommends \
-	&& rm -r /var/lib/apt/lists/* \
 
 	# --------
 	# 5. redis
@@ -224,33 +226,29 @@ RUN set -ex \
 	&& make -j "$(nproc)" \
 	&& make PREFIX=$REDIS_HOME install \
 	&& rm -rf $REDIS_SOURCE \
-	&& rm $DOCKER_BUILD_HOME/redis.tar.gz \
-
-	# ------------	
-	# 6. wordpress
-	# ------------
-	&& mkdir -p $WORDPRESS_SOURCE \
-	&& cd $DOCKER_BUILD_HOME \
-	&& wget -O wordpress.tar.gz "$WORDPRESS_DOWNLOAD_URL" --no-check-certificate \
-	&& echo "$WORDPRESS_SHA1 *wordpress.tar.gz" | sha1sum -c - \
-	&& tar -xf wordpress.tar.gz -C $WORDPRESS_SOURCE --strip-components=1 \
-	&& rm $DOCKER_BUILD_HOME/wordpress.tar.gz \
+	E&& rm $DOCKER_BUILD_HOME/redis.tar.gz \
 
 	# -------------
-	# 7. phpmyadmin
+	# 6. phpmyadmin
 	# -------------
 	&& mkdir -p $PHPMYADMIN_SOURCE \
-	&& cd $DOCKER_BUILD_HOME \
+	&& cd $PHPMYADMIN_SOURCE \
 	&& wget -O phpmyadmin.tar.gz "$PHPMYADMIN_DOWNLOAD_URL" --no-check-certificate \
 	&& echo "$PHPMYADMIN_SHA256 *phpmyadmin.tar.gz" | sha256sum -c - \
-	&& tar -xf phpmyadmin.tar.gz -C $PHPMYADMIN_SOURCE --strip-components=1 \
-	&& rm $DOCKER_BUILD_HOME/phpmyadmin.tar.gz \
+
+	# ------------	
+	# 7. wordpress
+	# ------------
+	&& mkdir -p $WORDPRESS_SOURCE \
+	&& cd $WORDPRESS_SOURCE \
+	&& wget -O wordpress.tar.gz "$WORDPRESS_DOWNLOAD_URL" --no-check-certificate \
+	&& echo "$WORDPRESS_SHA1 *wordpress.tar.gz" | sha1sum -c - \
 
 	# ----------
-	# . clean up
+	# ~. clean up
 	# ----------
 	&& apt-get purge -y -V -o APT::AutoRemove::RecommendsImportant=false --auto-remove $tools \
-	&& apt-get autoremove -y	
+	&& apt-get autoremove -y
 
 
 # =========
@@ -263,61 +261,34 @@ COPY httpd-modules.conf $HTTPD_CONF_DIR/
 COPY httpd-php.conf $HTTPD_CONF_DIR/
 COPY httpd-wordpress.conf $HTTPD_CONF_DIR/
 COPY httpd-phpmyadmin.conf $HTTPD_CONF_DIR/
-
 # php confs
-COPY php-log.ini $PHP_CONF_DIR_SCAN/
+COPY php.ini $PHP_CONF_DIR/
 COPY php-opcache.ini $PHP_CONF_DIR_SCAN/
-
 # wordpress conf
 COPY wp-config.php.microsoft $WORDPRESS_SOURCE/
-
 # phpmyadmin conf
-COPY phpmyadmin-config.inc.php $PHPMYADMIN_SOURCE/config.inc.php
+COPY phpmyadmin-config.inc.php $PHPMYADMIN_SOURCE/
 
 RUN set -ex \
 	## include php.conf
 	&& echo 'Include conf/httpd-php.conf' >> $HTTPD_CONF_FILE \
-	## include wordpress.conf
-	&& echo 'Include conf/httpd-wordpress.conf' >> $HTTPD_CONF_FILE \
-	## include phpmyadmin.conf
-	&& echo 'Include conf/httpd-phpmyadmin.conf' >> $HTTPD_CONF_FILE
-
-
-# ============================================================
-# Azure Web App on Linux configurations
-# /home is a shared directory among multiple web app instances
-# /home/site/wwwroot for WordPress site
-# /home/phpmyadmin for phpMyAdmin site
-# /home/data for native MariaDB data dir
-# /home/LogFiles/httpd for httpd/php/wordpress/phpmyadmin logs
-# /home/LogFiles/mariadb for mariadb logs
-# ============================================================
-
-ENV WORDPRESS_HOME_AZURE "/home/site/wwwroot"
-ENV PHPMYADMIN_HOME_AZURE "/home/phpmyadmin"
-ENV MARIADB_DATA_DIR_AZURE "/home/data"
-ENV HTTPD_LOG_DIR_AZURE "/home/LogFiles/httpd"
-ENV MARIADB_LOG_DIR_AZURE "/home/LogFiles/mariadb"
-
-RUN set -ex \
+	&& test ! -d /var/lib/php/sessions && mkdir -p /var/lib/php/sessions \
+	&& chown www-data:www-data /var/lib/php/sessions \
+	##
 	&& test ! -d /var/www && mkdir -p /var/www \
-	# wordpress
-	&& rm -rf $WORDPRESS_HOME \
-	&& ln -s $WORDPRESS_HOME_AZURE $WORDPRESS_HOME \
-	# phpmyadmin
-	&& rm -rf $PHPMYADMIN_HOME \
-	&& ln -s $PHPMYADMIN_HOME_AZURE $PHPMYADMIN_HOME \
-	# mariadb
-	&& mkdir -p $MARIADB_DATA_DIR_TEMP \
-	&& cp -R $MARIADB_DATA_DIR/* $MARIADB_DATA_DIR_TEMP/ \
-	&& rm -rf $MARIADB_DATA_DIR \
-	&& ln -s $MARIADB_DATA_DIR_AZURE $MARIADB_DATA_DIR \
-	# httpd, php, wordpress, phpmyadmin logs
-	&& rm -rf $HTTPD_LOG_DIR \
-	&& ln -s $HTTPD_LOG_DIR_AZURE $HTTPD_LOG_DIR \
-	# mariadb log
-	&& rm -rf $MARIADB_LOG_DIR \
-	&& ln -s $MARIADB_LOG_DIR_AZURE $MARIADB_LOG_DIR
+	&& echo '<html><head><meta http-equiv="refresh" content="30" /><meta http-equiv="pragma" content="no-cache" /><meta http-equiv="cache-control" content="no-cache" /><title>Installing WordPress</title></head><body>Installing WordPress ... This could be done in minutes. Please refresh your browser later.</body></html>' > /var/www/index.html \
+	&& chown -R www-data:www-data /var/www \
+	##
+	&& ln -s $WORDPRESS_HOME /var/www/wordpress \
+	##
+	&& ln -s $PHPMYADMIN_HOME /var/www/phpmyadmin \
+	##
+	&& rm -rf /var/log/mysql \
+	&& ln -s $MARIADB_LOG_DIR /var/log/mysql \
+	##
+	&& rm -rf /var/log/httpd \
+	&& ln -s $HTTPD_LOG_DIR /var/log/httpd
+
 
 # =====
 # final
