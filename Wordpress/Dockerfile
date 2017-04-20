@@ -272,12 +272,16 @@ COPY phpmyadmin-config.inc.php $PHPMYADMIN_SOURCE/
 RUN set -ex \
 	## include php.conf
 	&& echo 'Include conf/httpd-php.conf' >> $HTTPD_CONF_FILE \
+  ## enable error log and disable using syslog
+  && sed -i 's/skip_log_error/#skip_log_error/g' /etc/mysql/mariadb.conf.d/50-mysqld_safe.cnf \
+	&& sed -i 's/syslog/#syslog/g' /etc/mysql/mariadb.conf.d/50-mysqld_safe.cnf \
+  ##
 	&& test ! -d /var/lib/php/sessions && mkdir -p /var/lib/php/sessions \
 	&& chown www-data:www-data /var/lib/php/sessions \
 	##
 	&& test ! -d /var/www && mkdir -p /var/www \
-	&& echo '<html><head><meta http-equiv="refresh" content="30" /><meta http-equiv="pragma" content="no-cache" /><meta http-equiv="cache-control" content="no-cache" /><title>Installing WordPress</title></head><body>Installing WordPress ... This could be done in minutes. Please refresh your browser later.</body></html>' > /var/www/index.html \
-	&& chown -R www-data:www-data /var/www \
+        && echo '<html><head><meta http-equiv="refresh" content="30" /><meta http-equiv="pragma" content="no-cache" /><meta http-equiv="cache-control" content="no-cache" /><title>Installing WordPress</title></head><body>Installing WordPress ... This could be done in minutes. Please refresh your browser later.</body></html>' > /var/www/index.html \
+        && chown -R www-data:www-data /var/www \
 	##
 	&& ln -s $WORDPRESS_HOME /var/www/wordpress \
 	##

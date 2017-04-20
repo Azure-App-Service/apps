@@ -31,40 +31,25 @@
             "type": "string",
             "defaultValue": "appsvc/apps:wordpress"
         },
-        "wordPressDatabaseHost": {
+        "dataBaseHost": {
             "type": "string",
-            "defaultValue": "localhost",
-            "metadata": {
-                "description": "WordPress Database Host"
-            }
+            "defaultValue": "localhost"
         },
-        "wordPressDatabaseName": {
+        "dataBaseName": {
             "type": "string",
-            "defaultValue": "wordpress",
-            "metadata": {
-                "description": "WordPress Database Name"
-            }
+            "defaultValue": "wordpress"
         },
-        "wordPressDatabaseUsername": {
+        "dataBaseUsername": {
             "type": "string",
-            "defaultValue": "wordpress",
-            "metadata": {
-                "description": "WordPress Database Username"
-            }
+            "defaultValue": "wordpress"
         },
-        "wordPressDatabasePassword": {
+        "dataBasePassword": {
             "type": "securestring",
-            "defaultValue": "MS173m_QN",
-            "metadata": {
-                "description": "WordPress Database Password"
-            }
+            "defaultValue": "MS173m_QN"
         },
-        "wordPressTablePrefix": {
+        "tableNamePrefix": {
             "type": "string",
-            "defaultValue": "wp_",
-            "metadata": {
-                "description": "WordPress Table Prefix"
-            }
+            "defaultValue": "wp_"
         },
         "phpMyAdminUsername": {
             "type": "string",
@@ -93,24 +78,24 @@
                             "value": "[parameters('dockerRegistryImageName')]"
                         },
                         {
-                            "name": "WORDPRESS_DB_HOST",
-                            "value": "[parameters('wordPressDatabaseHost')]"
+                            "name": "DATABASE_HOST",
+                            "value": "[parameters('dataBaseHost')]"
                         },
                         {
-                            "name": "WORDPRESS_DB_NAME",
-                            "value": "[parameters('wordPressDatabaseName')]"
+                            "name": "DATABASE_NAME",
+                            "value": "[parameters('dataBaseName')]"
                         },
                         {
-                            "name": "WORDPRESS_DB_USERNAME",
-                            "value": "[parameters('wordPressDatabaseUsername')]"
+                            "name": "DATABASE_USERNAME",
+                            "value": "[parameters('dataBaseUsername')]"
                         },
                         {
-                            "name": "WORDPRESS_DB_PASSWORD",
-                            "value": "[parameters('wordPressDatabasePassword')]"
+                            "name": "DATABASE_PASSWORD",
+                            "value": "[parameters('dataBasePassword')]"
                         },
                         {
-                            "name": "WORDPRESS_DB_PREFIX",
-                            "value": "[parameters('wordPressTablePrefix')]"
+                            "name": "TABLE_NAME_PREFIX",
+                            "value": "[parameters('tableNamePrefix')]"
                         },
                         {
                             "name": "PHPMYADMIN_USERNAME",

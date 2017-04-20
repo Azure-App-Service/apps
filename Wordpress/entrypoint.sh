@@ -78,21 +78,21 @@ setup_wordpress(){
 }
 
 update_wordpress_config(){
-	set_var_if_null "WORDPRESS_DB_HOST" "localhost"
-	set_var_if_null "WORDPRESS_DB_NAME" "wordpress"
-	set_var_if_null "WORDPRESS_DB_USERNAME" "wordpress"
-	set_var_if_null "WORDPRESS_DB_PASSWORD" "MS173m_QN"
-	set_var_if_null "WORDPRESS_DB_PREFIX" "wp_"
-	if [ "${WORDPRESS_DB_HOST,,}" = "localhost" ]; then
-		export WORDPRESS_DB_HOST="localhost"
+	set_var_if_null "DATABASE_HOST" "localhost"
+	set_var_if_null "DATABASE_NAME" "wordpress"
+	set_var_if_null "DATABASE_USERNAME" "wordpress"
+	set_var_if_null "DATABASE_PASSWORD" "MS173m_QN"
+	set_var_if_null "TABLE_NAME_PREFIX" "wp_"
+	if [ "${DATABASE_HOST,,}" = "localhost" ]; then
+		export DATABASE_HOST="localhost"
 	fi
 
 	# update wp-config.php with the vars
-        sed -i "s/connectstr_dbhost = '';/connectstr_dbhost = '$WORDPRESS_DB_HOST';/" "$WORDPRESS_HOME/wp-config.php"
-        sed -i "s/connectstr_dbname = '';/connectstr_dbname = '$WORDPRESS_DB_NAME';/" "$WORDPRESS_HOME/wp-config.php"
-        sed -i "s/connectstr_dbusername = '';/connectstr_dbusername = '$WORDPRESS_DB_USERNAME';/" "$WORDPRESS_HOME/wp-config.php"
-        sed -i "s/connectstr_dbpassword = '';/connectstr_dbpassword = '$WORDPRESS_DB_PASSWORD';/" "$WORDPRESS_HOME/wp-config.php"
-        sed -i "s/table_prefix  = 'wp_';/table_prefix  = '$WORDPRESS_DB_PREFIX';/" "$WORDPRESS_HOME/wp-config.php"
+        sed -i "s/connectstr_dbhost = '';/connectstr_dbhost = '$DATABASE_HOST';/" "$WORDPRESS_HOME/wp-config.php"
+        sed -i "s/connectstr_dbname = '';/connectstr_dbname = '$DATABASE_NAME';/" "$WORDPRESS_HOME/wp-config.php"
+        sed -i "s/connectstr_dbusername = '';/connectstr_dbusername = '$DATABASE_USERNAME';/" "$WORDPRESS_HOME/wp-config.php"
+        sed -i "s/connectstr_dbpassword = '';/connectstr_dbpassword = '$DATABASE_PASSWORD';/" "$WORDPRESS_HOME/wp-config.php"
+        sed -i "s/table_prefix  = 'wp_';/table_prefix  = '$TABLE_NAME_PREFIX';/" "$WORDPRESS_HOME/wp-config.php"
 }
 
 load_wordpress(){
@@ -103,10 +103,10 @@ load_wordpress(){
 
 set -e
 
-echo "INFO: WORDPRESS_DB_HOST:" $WORDPRESS_DB_HOST
-echo "INFO: WORDPRESS_DB_NAME:" $WORDPRESS_DB_NAME
-echo "INFO: WORDPRESS_DB_USERNAME:" $WORDPRESS_DB_USERNAME
-echo "INFO: WORDPRESS_DB_PREFIX:" $WORDPRESS_DB_PREFIX
+echo "INFO: DATABASE_HOST:" $DATABASE_HOST
+echo "INFO: DATABASE_NAME:" $DATABASE_NAME
+echo "INFO: DATABASE_USERNAME:" $DATABASE_USERNAME
+echo "INFO: TABLE_NAME_PREFIX:" $TABLE_NAME_PREFIX
 echo "INFO: PHPMYADMIN_USERNAME:" $PHPMYADMIN_USERNAME
 
 setup_httpd_log_dir
@@ -138,9 +138,9 @@ if grep -q "^\$connectstr_dbhost = 'localhost'\|^\$connectstr_dbhost = '127.0.0.
 	mysql -u root -e "GRANT ALL ON *.* TO \`$PHPMYADMIN_USERNAME\`@'localhost' IDENTIFIED BY '$PHPMYADMIN_PASSWORD' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 	
 	echo "Creating database for WordPress if not exists ..."
-	mysql -u root -e "CREATE DATABASE IF NOT EXISTS \`$WORDPRESS_DB_NAME\` CHARACTER SET utf8 COLLATE utf8_general_ci;"
+	mysql -u root -e "CREATE DATABASE IF NOT EXISTS \`$DATABASE_NAME\` CHARACTER SET utf8 COLLATE utf8_general_ci;"
 	echo "Granting user for WordPress ..."
-	mysql -u root -e "GRANT ALL ON \`$WORDPRESS_DB_NAME\`.* TO \`$WORDPRESS_DB_USERNAME\`@\`$WORDPRESS_DB_HOST\` IDENTIFIED BY '$WORDPRESS_DB_PASSWORD'; FLUSH PRIVILEGES;"
+	mysql -u root -e "GRANT ALL ON \`$DATABASE_NAME\`.* TO \`$DATABASE_USERNAME\`@\`$DATABASE_HOST\` IDENTIFIED BY '$DATABASE_PASSWORD'; FLUSH PRIVILEGES;"
 	
 	echo "Starting local Redis ..."
 	redis-server --daemonize yes
