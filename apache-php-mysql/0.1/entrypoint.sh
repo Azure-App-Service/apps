@@ -25,7 +25,7 @@ setup_mariadb_data_dir(){
 	if [ ! -d "$MARIADB_DATA_DIR/mysql" ]; then
 		echo "INFO: 'mysql' database doesn't exist under $MARIADB_DATA_DIR. So we think $MARIADB_DATA_DIR is empty."
 		echo "Copying all data files from the original folder /var/lib/mysql to $MARIADB_DATA_DIR ..."
-		cp -nR /var/lib/mysql/. $MARIADB_DATA_DIR
+		cp -R --no-clobber /var/lib/mysql/. $MARIADB_DATA_DIR
 	else
 		echo "INFO: 'mysql' database already exists under $MARIADB_DATA_DIR."
 	fi
@@ -49,7 +49,7 @@ setup_phpmyadmin(){
 	mv $PHPMYADMIN_SOURCE/phpmyadmin.tar.gz $PHPMYADMIN_HOME/
 	tar -xf phpmyadmin.tar.gz -C $PHPMYADMIN_HOME --strip-components=1
 	# create config.inc.php
-	cp -nR $PHPMYADMIN_SOURCE/phpmyadmin-config.inc.php $PHPMYADMIN_HOME/config.inc.php
+	cp -R --no-clobber $PHPMYADMIN_SOURCE/phpmyadmin-config.inc.php $PHPMYADMIN_HOME/config.inc.php
 	rm $PHPMYADMIN_HOME/phpmyadmin.tar.gz
 	rm -rf $PHPMYADMIN_SOURCE
 
@@ -65,6 +65,12 @@ update_settings(){
 }
 
 set -e
+
+echo "Starting SSH ..."
+service ssh start
+
+test ! -d "$APP_HOME" && echo "INFO: $APP_HOME not found. creating ..." && mkdir -p "$APP_HOME"
+chown -R www-data:www-data $APP_HOME
 
 update_settings
 
@@ -97,7 +103,7 @@ if [ ! -e "$PHPMYADMIN_HOME/config.inc.php" ]; then
 	echo "INFO: $PHPMYADMIN_HOME/config.inc.php not found."
 	echo "Installing phpMyAdmin ..."
 	setup_phpmyadmin
-	else
+else
 	echo "INFO: $PHPMYADMIN_HOME/config.inc.php already exists."
 fi
 

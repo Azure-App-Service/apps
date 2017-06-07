@@ -9,6 +9,7 @@ This docker image contains the following components:
 2. Apache HTTPD **2.4.25**
 3. MariaDB      **10.0+**
 4. phpMyAdmin   **4.6.6**
+5. SSH
 
 Ubuntu 16.04 is used as the base image.
 
@@ -18,6 +19,10 @@ This docker image enables you to:
 - run a Apache/PHP/MySQL Environment on **Azure Web App on Linux**;
 - connect your App site to **Azure ClearDB** or the builtin MariaDB;
 - manage the build-in MariaDB with the built-in phpMyAdmin;
+- ssh to the docker container via the URL like below;
+```
+        https://<your sitename>.scm.azurewebsites.net/webssh/host
+```
 
 ## Deploying / Running
 You can specify the following environment variables when deploying the image to Azure or running it on your Docker engine's host.
