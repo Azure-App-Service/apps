@@ -27,7 +27,7 @@
         },
         "dockerRegistryImageName": {
             "type": "string",
-            "defaultValue": "songgs/apache-php-mysql:latest"
+            "defaultValue": "fanjeffrey/apm:0.1"
         },
         "databaseName": {
             "type": "string",
