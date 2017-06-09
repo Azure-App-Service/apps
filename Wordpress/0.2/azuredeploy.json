@@ -29,7 +29,7 @@
         },
         "dockerRegistryImageName": {
             "type": "string",
-            "defaultValue": "appsvc/apps:wordpress"
+            "defaultValue": "fanjeffrey/wordpress:0.2"
         },
         "dataBaseHost": {
             "type": "string",

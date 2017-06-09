@@ -18,6 +18,10 @@ This docker image enables you to:
 - run a WordPress site on **Azure Web App on Linux** or your Docker engine's host;
 - connect your WordPress site to **Azure ClearDB** or the builtin MariaDB;
 - leverage **Azure Redis Cache** or the builtin Redis cache server;
+- ssh to the docker container via the URL like below;
+```
+        https://<your sitename>.scm.azurewebsites.net/webssh/host
+```
 
 ## Limitations
 - Some unexpected issues may happen after you scale out your site to multiple instances, if you deploy a WordPress site on Azure with this docker image and use the MariaDB built in this docker image as the database.
@@ -88,3 +92,6 @@ If you're using the builtin MariaDB, you can access the builtin phpMyAdmin site 
 If you're using the builtin MariaDB, you can leverage the builtin Redis cache server with WordPress cache plugins. For example, the [Redis Object Cache](https://wordpress.org/plugins/redis-cache/).
 
 The builtin Redis cache server uses port 6379.
+
+## Startup Log
+The startup log file (**entrypoint.log**) is placed under the folder /home/LogFiles.

@@ -56,6 +56,9 @@ ENV WORDPRESS_SHA1 "35adcd8162eae00d5bc37f35344fdc06b22ffc98"
 ENV WORDPRESS_SOURCE "/usr/src/wordpress"
 ENV WORDPRESS_HOME "/home/site/wwwroot"
 
+# ssh
+ENV SSH_PASSWD "root:Docker!"
+
 #
 ENV DOCKER_BUILD_HOME "/dockerbuild"
 
@@ -69,6 +72,7 @@ ENV DOCKER_BUILD_HOME "/dockerbuild"
 # 5. redis
 # 6. phpmyadmin
 # 7. wordpress
+# 8. ssh
 # ====================
 
 WORKDIR $DOCKER_BUILD_HOME
@@ -243,6 +247,13 @@ RUN set -ex \
 	&& cd $WORDPRESS_SOURCE \
 	&& wget -O wordpress.tar.gz "$WORDPRESS_DOWNLOAD_URL" --no-check-certificate \
 	&& echo "$WORDPRESS_SHA1 *wordpress.tar.gz" | sha1sum -c - \
+	
+	# ------
+	# 8. ssh
+	# ------
+	&& apt-get update \
+	&& apt-get install -y --no-install-recommends openssh-server \
+	&& echo "$SSH_PASSWD" | chpasswd \
 
 	# ----------
 	# ~. clean up
@@ -268,14 +279,16 @@ COPY php-opcache.ini $PHP_CONF_DIR_SCAN/
 COPY wp-config.php.microsoft $WORDPRESS_SOURCE/
 # phpmyadmin conf
 COPY phpmyadmin-config.inc.php $PHPMYADMIN_SOURCE/
+# ssh
+COPY sshd_config /etc/ssh/
 
 RUN set -ex \
 	## include php.conf
 	&& echo 'Include conf/httpd-php.conf' >> $HTTPD_CONF_FILE \
-  ## enable error log and disable using syslog
-  && sed -i 's/skip_log_error/#skip_log_error/g' /etc/mysql/mariadb.conf.d/50-mysqld_safe.cnf \
+  	## enable error log and disable using syslog
+  	&& sed -i 's/skip_log_error/#skip_log_error/g' /etc/mysql/mariadb.conf.d/50-mysqld_safe.cnf \
 	&& sed -i 's/syslog/#syslog/g' /etc/mysql/mariadb.conf.d/50-mysqld_safe.cnf \
-  ##
+  	##
 	&& test ! -d /var/lib/php/sessions && mkdir -p /var/lib/php/sessions \
 	&& chown www-data:www-data /var/lib/php/sessions \
 	##
@@ -299,5 +312,5 @@ RUN set -ex \
 # =====
 COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
-EXPOSE 80
+EXPOSE 2222 80
 ENTRYPOINT ["entrypoint.sh"]
