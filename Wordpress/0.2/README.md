@@ -5,7 +5,7 @@ A WordPress Docker image which is built with the Dockerfile under this repo can 
 ## Components
 This docker image currently contains the following components:
 
-1. WordPress    **4.7.3**
+1. WordPress    **4.8**
 2. PHP          **7.1.2**
 3. Apache HTTPD **2.4.25**
 4. MariaDB      **10.0+**
