@@ -27,7 +27,7 @@
         },
         "dockerRegistryImageName": {
             "type": "string",
-            "defaultValue": "fanjeffrey/apm:0.1"
+            "defaultValue": "appsvc/apps:apache-php-mysql-0.1"
         },
         "databaseName": {
             "type": "string",
