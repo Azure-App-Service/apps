@@ -24,10 +24,6 @@
                 "S2",
                 "S3"
             ]
-        },
-        "linuxFxVersion": {
-            "type": "string",
-            "defaultValue": "DOCKER|FANJEFFREY/APACHE-PHP-PQSQL:0.1"
         }
     },
     "resources": [
@@ -36,12 +32,8 @@
             "name": "[parameters('siteName')]",
             "properties": {
                 "siteConfig": {
-                    "appSettings": [
-                        {
-                            "name": "LinuxFxVersion",
-                            "value": "[parameters('linuxFxVersion')]"
-                        }
-                    ]
+                    "appCommandLine": "",
+                    "linuxFxVersion": "DOCKER|appsvc/apps:apache-php-postgresql-0.1"
                 },
                 "name": "[parameters('siteName')]",
                 "serverFarmId": "[parameters('servicePlanName')]",
