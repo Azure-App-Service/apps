@@ -33,7 +33,7 @@
             "properties": {
                 "siteConfig": {
                     "appCommandLine": "",
-                    "linuxFxVersion": "DOCKER|songgs/python:latest"
+                    "linuxFxVersion": "DOCKER|fanjeffrey/python"
                 },
                 "name": "[parameters('siteName')]",
                 "serverFarmId": "[parameters('servicePlanName')]",
