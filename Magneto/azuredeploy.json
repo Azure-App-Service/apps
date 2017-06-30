@@ -27,7 +27,7 @@
         },
         "dockerRegistryImageName": {
             "type": "string",
-            "defaultValue": "appsvc/apps:magento"
+            "defaultValue": "appsvc/apps:magneto"
         },
         "magentoAdminUser": {
             "type": "string",
