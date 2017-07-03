@@ -25,10 +25,6 @@
                 "S3"
             ]
         },
-        "dockerRegistryImageName": {
-            "type": "string",
-            "defaultValue": "appsvc/apps:apache-php-mysql-0.1"
-        },
         "databaseName": {
             "type": "string",
             "defaultValue": "appdb"
@@ -58,10 +54,6 @@
                 "siteConfig": {
                     "appSettings": [
                         {
-                            "name": "DOCKER_CUSTOM_IMAGE_NAME",
-                            "value": "[parameters('dockerRegistryImageName')]"
-                        },
-                        {
                             "name": "DATABASE_NAME",
                             "value": "[parameters('databaseName')]"
                         },
@@ -81,7 +73,9 @@
                             "name": "PHPMYADMIN_PASSWORD",
                             "value": "[parameters('phpmyadminPassword')]"
                         }
-                    ]
+                    ],
+                    "appCommandLine": "",
+                    "linuxFxVersion": "DOCKER|appsvc/apps:apache-php-mysql-0.1"
                 },
                 "name": "[parameters('siteName')]",
                 "serverFarmId": "[parameters('servicePlanName')]",
