@@ -230,7 +230,7 @@ RUN set -ex \
 	&& make -j "$(nproc)" \
 	&& make PREFIX=$REDIS_HOME install \
 	&& rm -rf $REDIS_SOURCE \
-	E&& rm $DOCKER_BUILD_HOME/redis.tar.gz \
+	&& rm $DOCKER_BUILD_HOME/redis.tar.gz \
 
 	# -------------
 	# 6. phpmyadmin
