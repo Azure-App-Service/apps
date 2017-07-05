@@ -27,10 +27,6 @@
                 "S3"
             ]
         },
-        "dockerRegistryImageName": {
-            "type": "string",
-            "defaultValue": "appsvc/apps:wordpress"
-        },
         "dataBaseHost": {
             "type": "string",
             "defaultValue": "localhost"
@@ -74,10 +70,6 @@
                 "siteConfig": {
                     "appSettings": [
                         {
-                            "name": "DOCKER_CUSTOM_IMAGE_NAME",
-                            "value": "[parameters('dockerRegistryImageName')]"
-                        },
-                        {
                             "name": "DATABASE_HOST",
                             "value": "[parameters('dataBaseHost')]"
                         },
@@ -105,7 +97,9 @@
                             "name": "PHPMYADMIN_PASSWORD",
                             "value": "[parameters('phpMyAdminPassword')]"
                         }
-                    ]
+                    ],
+                    "appCommandLine": "",
+                    "linuxFxVersion": "DOCKER|appsvc/apps:wordpress-0.2"
                 },
                 "name": "[parameters('siteName')]",
                 "serverFarmId": "[parameters('servicePlanName')]",
