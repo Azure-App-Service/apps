@@ -99,7 +99,7 @@
                         }
                     ],
                     "appCommandLine": "",
-                    "linuxFxVersion": "DOCKER|appsvc/apps:wordpress-0.2"
+                    "linuxFxVersion": "DOCKER|fanjeffrey/wordpress:latest"
                 },
                 "name": "[parameters('siteName')]",
                 "serverFarmId": "[parameters('servicePlanName')]",
