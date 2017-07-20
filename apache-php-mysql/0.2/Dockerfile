@@ -11,7 +11,7 @@ MAINTAINER Azure App Service Container Images <appsvc-images@microsoft.com>
 
 # apache httpd
 ENV HTTPD_VERSION "2.4.25"
-ENV HTTPD_DOWNLOAD_URL "https://www.apache.org/dist/httpd/httpd-$HTTPD_VERSION.tar.gz"
+ENV HTTPD_DOWNLOAD_URL "http://archive.apache.org/dist/httpd/httpd-$HTTPD_VERSION.tar.gz"
 ENV HTTPD_SHA1 "377c62dc6b25c9378221111dec87c28f8fe6ac69"
 ENV HTTPD_SOURCE "/usr/src/httpd"
 ENV HTTPD_HOME "/usr/local/httpd"

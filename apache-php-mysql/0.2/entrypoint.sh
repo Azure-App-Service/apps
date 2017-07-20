@@ -57,9 +57,7 @@ setup_phpmyadmin(){
 }
 
 update_settings(){
-	set_var_if_null "DATABASE_NAME" "appdb"
-	set_var_if_null "DATABASE_USERNAME" "appuser"
-	set_var_if_null "DATABASE_PASSWORD" "MS173m_QN"
+	set_var_if_null "DATABASE_TYPE" "remote"
 	set_var_if_null 'PHPMYADMIN_USERNAME' 'phpmyadmin'
 	set_var_if_null 'PHPMYADMIN_PASSWORD' 'MS173m_QN'
 }
@@ -72,44 +70,41 @@ service ssh start
 test ! -d "$APP_HOME" && echo "INFO: $APP_HOME not found. creating ..." && mkdir -p "$APP_HOME"
 chown -R www-data:www-data $APP_HOME
 
-update_settings
-
-echo "INFO: DATABASE_NAME:" $DATABASE_NAME
-echo "INFO: DATABASE_USERNAME:" $DATABASE_USERNAME
-echo "INFO: PHPMYADMIN_USERNAME:" $PHPMYADMIN_USERNAME
-
 test ! -d "$HTTPD_LOG_DIR" && echo "INFO: $HTTPD_LOG_DIR not found. creating ..." && mkdir -p "$HTTPD_LOG_DIR"
 chown -R www-data:www-data $HTTPD_LOG_DIR
 apachectl start
 
-# local MariaDB is used 
-echo "Setting up MariaDB data dir ..."
-setup_mariadb_data_dir
-echo "Setting up MariaDB log dir ..."
-test ! -d "$MARIADB_LOG_DIR" && echo "INFO: $MARIADB_LOG_DIR not found. creating ..." && mkdir -p "$MARIADB_LOG_DIR"
-chown -R mysql:mysql $MARIADB_LOG_DIR
-echo "Starting local MariaDB ..."
-start_mariadb
+update_settings
 
-if [ ! -e "$PHPMYADMIN_HOME/config.inc.php" ]; then
-	echo "Granting user for phpMyAdmin ..."
-	mysql -u root -e "GRANT ALL ON *.* TO \`$PHPMYADMIN_USERNAME\`@'localhost' IDENTIFIED BY '$PHPMYADMIN_PASSWORD' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+if [ "${DATABASE_TYPE,,}" = "local" ]; then
 
-	echo "Creating database if not exists ..."
-	mysql -u root -e "CREATE DATABASE IF NOT EXISTS \`$DATABASE_NAME\` CHARACTER SET utf8 COLLATE utf8_general_ci;"
-	echo "Granting user ..."
-	mysql -u root -e "GRANT ALL ON \`$DATABASE_NAME\`.* TO \`$DATABASE_USERNAME\`@\`$DATABASE_HOST\` IDENTIFIED BY '$DATABASE_PASSWORD'; FLUSH PRIVILEGES;"
+	echo "INFO: loading local MariaDB and phpMyAdmin ..."
+	echo "INFO: DATABASE_TYPE:" $DATABASE_TYPE
+	echo "INFO: PHPMYADMIN_USERNAME:" $PHPMYADMIN_USERNAME
 
-	echo "INFO: $PHPMYADMIN_HOME/config.inc.php not found."
-	echo "Installing phpMyAdmin ..."
-	setup_phpmyadmin
-else
-	echo "INFO: $PHPMYADMIN_HOME/config.inc.php already exists."
-fi
+	# local MariaDB is used
+	echo "Setting up MariaDB data dir ..."
+	setup_mariadb_data_dir
+	echo "Setting up MariaDB log dir ..."
+	test ! -d "$MARIADB_LOG_DIR" && echo "INFO: $MARIADB_LOG_DIR not found. creating ..." && mkdir -p "$MARIADB_LOG_DIR"
+	chown -R mysql:mysql $MARIADB_LOG_DIR
+	echo "Starting local MariaDB ..."
+	start_mariadb
 
-echo "Loading phpMyAdmin conf ..."
-if ! grep -q "^Include conf/httpd-phpmyadmin.conf" $HTTPD_CONF_FILE; then
-	echo 'Include conf/httpd-phpmyadmin.conf' >> $HTTPD_CONF_FILE
+	if [ ! -e "$PHPMYADMIN_HOME/config.inc.php" ]; then
+		echo "INFO: $PHPMYADMIN_HOME/config.inc.php not found."
+		echo "Granting user for phpMyAdmin ..."
+		mysql -u root -e "GRANT ALL ON *.* TO \`$PHPMYADMIN_USERNAME\`@'localhost' IDENTIFIED BY '$PHPMYADMIN_PASSWORD' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+		echo "Installing phpMyAdmin ..."
+		setup_phpmyadmin
+	else
+		echo "INFO: $PHPMYADMIN_HOME/config.inc.php already exists."
+	fi
+
+	echo "Loading phpMyAdmin conf ..."
+	if ! grep -q "^Include conf/httpd-phpmyadmin.conf" $HTTPD_CONF_FILE; then
+		echo 'Include conf/httpd-phpmyadmin.conf' >> $HTTPD_CONF_FILE
+	fi
 fi
 
 apachectl stop
