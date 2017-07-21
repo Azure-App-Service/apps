@@ -58,6 +58,5 @@ The startup log file (**entrypoint.log**) is placed under the folder /home/LogFi
 ## Change Log
 - **Version 0.2** 
   1. Supports uploading large files. See [php.ini](0.2/php.ini) here.
-  2. Add App Setting Key: DATABASE_TYPE, default value is up to the way to deploy as below. See [entrypoint.sh](0.2/entrypoint.sh), [azuredeploy.json](azuredeploy.json) here.
-        * Deploy to Azure: default value is local, run local MariaDB and phpMyAdmin
-        * Docker Container in Azure Portal: default value is remote, disable local MariaDB and phpMyAdmin
+  2. New app setting item: DATABASE_TYPE, default value is "remote". You can set it to "local" to start the built-in MySQL database server. See [entrypoint.sh](0.2/entrypoint.sh) for more information.
+  3. Dropped 3 app setting items: DATABASE_NAME, DATABASE_USER, and DATABASE_PASSWORD. Removal of these items has no impacts on your existing database or site contents.
