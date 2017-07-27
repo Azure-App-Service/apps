@@ -5,12 +5,13 @@ A WordPress Docker image which is built with the Dockerfile under this repo can 
 ## Components
 This docker image currently contains the following components:
 
-1. WordPress    **4.7.3**
+1. WordPress    **4.8**
 2. PHP          **7.1.2**
 3. Apache HTTPD **2.4.25**
 4. MariaDB      **10.0+**
 5. Redis        **3.2.8**
 6. phpMyAdmin   **4.6.6**
+7. SSH
 
 ## Features
 This docker image enables you to:
@@ -18,6 +19,10 @@ This docker image enables you to:
 - run a WordPress site on **Azure Web App on Linux** or your Docker engine's host;
 - connect your WordPress site to **Azure ClearDB** or the builtin MariaDB;
 - leverage **Azure Redis Cache** or the builtin Redis cache server;
+- ssh to the docker container via the URL like below;
+```
+        https://<your sitename>.scm.azurewebsites.net/webssh/host
+```
 
 ## Limitations
 - Some unexpected issues may happen after you scale out your site to multiple instances, if you deploy a WordPress site on Azure with this docker image and use the MariaDB built in this docker image as the database.
@@ -49,7 +54,7 @@ At the SETUP page, as shown below, you can change default values of these enviro
 ### Running on Docker engine's host
 The **docker run** command below will get you a container that has a WordPress site connected to the builtin MariaDB, and has the builtin Redis cache server started, and has the builtin phpMyAdmin site enabled.
 ```
-docker run -d -t -p 80:80 fanjeffrey/wordpress:latest
+docker run -d -t -p 80:80 appsvc/apps:wordpress-0.2
 ```
 
 The command below will connect the WordPress site within your Docker container to an Azure ClearDb.
@@ -60,7 +65,7 @@ docker run -d -t -p 80:80 \
     -e "DATABASE_USERNAME=<your_db_username>" \
     -e "DATABASE_PASSWORD=<your_db_password>" \
     -e "TABLE_NAME_PREFIX=<your_table_name_prefix>" \
-    fanjeffrey/wordpress:latest
+    appsvc/apps:wordpress-0.2
 ```
 
 When you use "localhost" as the database host, you can customize phpMyAdmin username and password.
@@ -73,7 +78,7 @@ docker run -d -t -p 80:80 \
     -e "TABLE_NAME_PREFIX=<your_table_name_prefix>" \
     -e "PHPMYADMIN_USERNAME=<your_phpmyadmin_username>" \
     -e "PHPMYADMIN_PASSWORD=<your_phpmyadmin_password>" \
-    fanjeffrey/wordpress:latest
+    appsvc/apps:wordpress-0.2
 ```
 
 ## The Builtin MariaDB server
@@ -88,3 +93,14 @@ If you're using the builtin MariaDB, you can access the builtin phpMyAdmin site 
 If you're using the builtin MariaDB, you can leverage the builtin Redis cache server with WordPress cache plugins. For example, the [Redis Object Cache](https://wordpress.org/plugins/redis-cache/).
 
 The builtin Redis cache server uses port 6379.
+
+## Startup Log
+The startup log file (**entrypoint.log**) is placed under the folder /home/LogFiles.
+
+## Change Log
+- **Version 0.2**
+  1. Supports SSH. See [Dockerfile](0.2/Dockerfile), [sshd_config](0.2/sshd_config) here;
+  2. Uses LinuxFxVersion instead to set Docker container. See [azuredeploy.json](azuredeploy.json) here;
+- **Version 0.3**
+  1. Supports uploading large files. See [php.ini](0.3/php.ini) here;
+  2. Supports Zlib. See [Dockerfile](0.3/Dockerfile) here.
