@@ -17,21 +17,19 @@ Ubuntu 16.04 is used as the base image.
 This docker image enables you to:
 
 - run a Apache/PHP/MySQL Environment on **Azure Web App on Linux**;
-- connect your App site to **Azure ClearDB** or the builtin MariaDB;
-- manage the build-in MariaDB with the built-in phpMyAdmin;
+- connect your App site to **Azure ClearDB** or the built-in MariaDB;
+- manage the build-in MariaDB with the built-in phpMyAdmin(You need set DATABASE_TYPE to **"local"**);
 - ssh to the docker container via the URL like below;
 ```
         https://<your sitename>.scm.azurewebsites.net/webssh/host
 ```
 
 ## Deploying / Running
-You can specify the following environment variables when deploying the image to Azure or running it on your Docker engine's host.
+Here are default environment variables when deploying the image to Azure.
 
 Name | Default Value
 ---- | -------------
-DATABASE_NAME | appdb
-DATABASE_USERNAME | appuser
-DATABASE_PASSWORD | MS173m_QN
+DATABASE_TYPE | local
 PHPMYADMIN_USERNAME | phpmyadmin
 PHPMYADMIN_PASSWORD | MS173m_QN
 
@@ -60,3 +58,5 @@ The startup log file (**entrypoint.log**) is placed under the folder /home/LogFi
 ## Change Log
 - **Version 0.2** 
   1. Supports uploading large files. See [php.ini](0.2/php.ini) here.
+  2. New app setting item: DATABASE_TYPE, default value is "remote". You can set it to "local" to start the built-in MySQL database server. See [entrypoint.sh](0.2/entrypoint.sh) for more information.
+  3. Dropped 3 app setting items: DATABASE_NAME, DATABASE_USER, and DATABASE_PASSWORD. Removal of these items has no impacts on your existing database or site contents.

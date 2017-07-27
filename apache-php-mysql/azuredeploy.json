@@ -25,17 +25,9 @@
                 "S3"
             ]
         },
-        "databaseName": {
+        "dataBaseType": {
             "type": "string",
-            "defaultValue": "appdb"
-        },
-        "databaseUsername": {
-            "type": "string",
-            "defaultValue": "appuser"
-        },
-        "databasePassword": {
-            "type": "securestring",
-            "defaultValue": "MS173m_QN"
+            "defaultValue": "local"
         },
         "phpmyadminUsername": {
             "type": "string",
@@ -53,29 +45,21 @@
             "properties": {
                 "siteConfig": {
                     "appSettings": [
-                        {
-                            "name": "DATABASE_NAME",
-                            "value": "[parameters('databaseName')]"
-                        },
-                        {
-                            "name": "DATABASE_USERNAME",
-                            "value": "[parameters('databaseUsername')]"
-                        },
-                        {
-                            "name": "DATABASE_PASSWORD",
-                            "value": "[parameters('databasePassword')]"
-                        },
-                        {
-                            "name": "PHPMYADMIN_USERNAME",
-                            "value": "[parameters('phpmyadminUsername')]"
-                        },
-                        {
-                            "name": "PHPMYADMIN_PASSWORD",
-                            "value": "[parameters('phpmyadminPassword')]"
-                        }
-                    ],
-                    "appCommandLine": "",
-                    "linuxFxVersion": "DOCKER|fanjeffrey/apm:0.2"
+                            {
+                                "name": "DATABASE_TYPE",
+                                "value": "[parameters('dataBaseType')]"
+                            },
+                            {
+                                "name": "PHPMYADMIN_USERNAME",
+                                "value": "[parameters('phpmyadminUsername')]"
+                            },
+                            {
+                                "name": "PHPMYADMIN_PASSWORD",
+                                "value": "[parameters('phpmyadminPassword')]"
+                            }
+                        ],
+                            "appCommandLine": "",
+                            "linuxFxVersion": "DOCKER|fanjeffrey/apm:0.2"
                 },
                 "name": "[parameters('siteName')]",
                 "serverFarmId": "[parameters('servicePlanName')]",
