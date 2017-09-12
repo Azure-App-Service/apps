@@ -1,3 +1,17 @@
+# Nginx Image for Azure App Service Linux
+
+Nginx Image for serving Static HTML Apps or Single Page Applications(React,Angular) using Azure App Service Linux
+
+### Benefits:
+- Image Size < 70MB
+- Easy to Use/Understand/Configure
+- SSH access to App Container
+
+You can control nginx configuration used in app container by creating  `nginx.conf` file @ `/home/site` folder
+
+Ex: default root folder is set to `/home/site/wwwroot`. You can change it to `/home/site/wwwroot/build` by creating `nginx.conf` file @ `/home/site` with below content.
+
+```
 worker_processes auto;
 pid          /var/run/nginx.pid;
 daemon off;
@@ -21,7 +35,7 @@ http {
         listen 80;
         server_name  www.example.com;
         error_log  /home/LogFiles/error.log warn;
-        root   /home/site/wwwroot;
+        root   /home/site/wwwroot/build;
         index  Default.htm Default.html index.html index.htm hostingstart.html;
 
         # Make site accessible from http://localhost/
@@ -34,3 +48,5 @@ http {
 
     }
 }
+
+```
