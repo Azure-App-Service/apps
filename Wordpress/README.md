@@ -1,6 +1,10 @@
 # WordPress Docker Image
+
+>## Note : This image is no longer maintained by the team . This is archived image. We recommend users to use this [apache-php-mysql]>(https://github.com/azure-app-service/apps) and then bring in their own code for WordPress 
+
 ## Overview
-A WordPress Docker image which is built with the Dockerfile under this repo can run on both [Azure Web App on Linux](https://docs.microsoft.com/en-us/azure/app-service-web/app-service-linux-intro) and your Docker engines's host.
+A WordPress Docker image which is built with the Dockerfile under this repo can run on both [Azure Web App on Linux]>(https://docs.microsoft.com/en-us/azure/app-service-web/app-service-linux-intro) and your Docker engines's host.
+
 
 ## Components
 This docker image currently contains the following components:
