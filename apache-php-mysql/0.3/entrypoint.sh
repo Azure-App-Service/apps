@@ -29,6 +29,9 @@ start_mariadb(){
 	service mysql start
 	rm -f /tmp/mysql.sock
 	ln -s /var/run/mysqld/mysqld.sock /tmp/mysql.sock
+
+	# create default database 'azurelocaldb'
+	mysql -u root -e "CREATE DATABASE IF NOT EXISTS azurelocaldb; FLUSH PRIVILEGES;"
 }
 
 setup_phpmyadmin(){
