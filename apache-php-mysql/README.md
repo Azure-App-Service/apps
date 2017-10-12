@@ -40,10 +40,6 @@ PHPMYADMIN_PASSWORD | MS173m_QN
         * WEBSITES_ENABLE_APP_SERVICE_STORAGE | true
     - enable the build-in MariaDB
         * DATABASE_TYPE | local
-### Running on Local Machine
-```
-        docker run -p 8000:8000 -e "DATABASE_TYPE=local" --name apm -t appsvcorg/apache-php-mysql:latest
-```
 
 ## The Builtin MariaDB server
 The builtin MariaDB server uses port 3306.
@@ -69,16 +65,18 @@ Startup log from entrypoint.sh is disabled by default. To enable startup log, yo
 
 On Webssh run the command below to check if the startup logs from entrypoint.sh is enabled.
 ```
-	#Replace example with your actual log name.
+	#Replace example with your actual log file name.
 	cat /home/LogFiles/2017_10_10_RDXXXXXX_docker.log
 ```
 
 ## Change Log
+- **Version 0.4**
+  1. Update the section Startup Log in README.md.
+  2. Create default database - azurelocaldb.(You need set DATABASE_TYPE to **"local"**)
+
 - **Version 0.3** 
   1. Enable mod_deflate.
   2. Drop using azuredeploy.json.
-  3. Update the section Startup Log in README.md.
-  4. Create default database - azurelocaldb.(You need set DATABASE_TYPE to **"local"**)
 
 - **Version 0.2** 
   1. Supports uploading large files. See [php.ini](0.2/php.ini) here.
