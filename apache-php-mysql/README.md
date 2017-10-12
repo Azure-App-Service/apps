@@ -33,6 +33,14 @@ DATABASE_TYPE | local
 PHPMYADMIN_USERNAME | phpmyadmin
 PHPMYADMIN_PASSWORD | MS173m_QN
 
+### Deploying on azure
+1. Go to Azure portal, go to the blade of your web app.
+2. Click *"Application settings"* and type the following in the field *"App settings"*
+    - [share the /home/ directory](https://docs.microsoft.com/en-us/azure/app-service/containers/app-service-linux-faq#custom-containers)
+        * WEBSITES_ENABLE_APP_SERVICE_STORAGE | true
+    - enable the build-in MariaDB
+        * DATABASE_TYPE | local
+
 ## The Builtin MariaDB server
 The builtin MariaDB server uses port 3306.
 
@@ -57,15 +65,18 @@ Startup log from entrypoint.sh is disabled by default. To enable startup log, yo
 
 On Webssh run the command below to check if the startup logs from entrypoint.sh is enabled.
 ```
-	#Replace RDXXXXXX with your actual folder name.
-	cat /home/LogFiles/RDXXXXXX/docker.log
+	#Replace example with your actual log file name.
+	cat /home/LogFiles/2017_10_10_RDXXXXXX_docker.log
 ```
 
 ## Change Log
+- **Version 0.4**
+  1. Update the section Startup Log in README.md.
+  2. Create default database - azurelocaldb.(You need set DATABASE_TYPE to **"local"**)
+
 - **Version 0.3** 
   1. Enable mod_deflate.
   2. Drop using azuredeploy.json.
-  3. Update the section Startup Log in README.md
 
 - **Version 0.2** 
   1. Supports uploading large files. See [php.ini](0.2/php.ini) here.
