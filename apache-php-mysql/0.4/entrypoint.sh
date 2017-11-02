@@ -98,29 +98,25 @@ update_settings
 
 if [ "${DATABASE_TYPE,,}" = "local" ]; then
 	# Phpmyadmin Log Info. Details please find: Version 0.4 - 3
-	if [ -z $DATABASE_USERNAME ]; then
-		echo "Error: Please set var DATABASE_USERNAME on App settings"
-		echo "<?php" > $APP_HOME/error_localdb.php
-		echo "echo 'Error: Fail to enable Local Database. Please set DATABASE_USERNAME/DATABASE_PASSWORD on App settings.';" >> $APP_HOME/error_localdb.php
-	fi
-
 	if [ -z $DATABASE_PASSWORD ]; then
 		echo "Error: Please set var DATABASE_PASSWORD on App settings"
 		echo "<?php" > $APP_HOME/error_localdb.php
 		echo "echo 'Error: Fail to enable Local Database. Please set DATABASE_PASSWORD on App settings.';" >> $APP_HOME/error_localdb.php
 	fi
 
+	if [ -z $DATABASE_USERNAME ]; then
+		echo "Error: Please set var DATABASE_USERNAME on App settings"
+		echo "<?php" > $APP_HOME/error_localdb.php
+		echo "echo 'Error: Fail to enable Local Database. Please set DATABASE_USERNAME/DATABASE_PASSWORD on App settings.';" >> $APP_HOME/error_localdb.php
+	fi
+
 	if [ ! -z $DATABASE_USERNAME ] && [ ! -z $DATABASE_PASSWORD ]; then
 		setup_localdb
 
-		rm $APP_HOME/error_localdb.php
+		if [ -e $APP_HOME/error_localdb.php ]; then
+			rm $APP_HOME/error_localdb.php
+		fi
 	fi
-fi
-
-if [ ! -e $APP_HOME/index.php ]; then
-	echo "Info: Init welcome info."
-	echo "<?php" > $APP_HOME/index.php
-	echo "echo 'Welcome to Image for Apache-PHP-MySQL.';" >> $APP_HOME/index.php
 fi
 
 apachectl stop
