@@ -26,12 +26,7 @@ This docker image enables you to:
 
 ## Deploying / Running
 Here are default environment variables when deploying the image to Azure.
-
-Name | Default Value
----- | -------------
-DATABASE_TYPE | local
-PHPMYADMIN_USERNAME | phpmyadmin
-PHPMYADMIN_PASSWORD | MS173m_QN
+- DATABASE_TYPE | remote
 
 ### Deploying on azure
 1. Go to Azure portal, go to the blade of your web app.
@@ -73,6 +68,9 @@ On Webssh run the command below to check if the startup logs from entrypoint.sh 
 - **Version 0.4**
   1. Update the section Startup Log in README.md.
   2. Create default database - azurelocaldb.(You need set DATABASE_TYPE to **"local"**)
+  3. Security release with **phpMyAdmin**, you need set Log Info on App settings.
+      -  DATABASE_USERNAME | <*your phpMyAdmin user*>
+      -  DATABASE_PASSWORD | <*your phpMyAdmin password*>
 
 - **Version 0.3** 
   1. Enable mod_deflate.
