@@ -114,8 +114,13 @@ if [ "${DATABASE_TYPE,,}" = "local" ]; then
 		setup_localdb
 
 		if [ -e $APP_HOME/error_localdb.php ]; then
-			rm $APP_HOME/error_localdb.php
+			rm -f $APP_HOME/error_localdb.php
 		fi
+	fi
+else
+	# ensure app install without effect of error_localdb.php if not local mode
+	if [ -e $APP_HOME/error_localdb.php ]; then
+		rm -f $APP_HOME/error_localdb.php
 	fi
 fi
 
