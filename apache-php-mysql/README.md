@@ -69,7 +69,7 @@ On Webssh run the command below to check if the startup logs from entrypoint.sh 
   1. Update the section Startup Log in README.md.
   2. Create default database - azurelocaldb.(You need set DATABASE_TYPE to **"local"**)
   3. Considering security, please set database authentication info on [*"App settings"*](#deploying-on-azure) when enable **"local"** mode.   
-     Note: Database authentication is also used by phpMyAdmin.
+     Note: the credentials below is also used by phpMyAdmin.
       -  DATABASE_USERNAME | <*your phpMyAdmin user*>
       -  DATABASE_PASSWORD | <*your phpMyAdmin password*>
 
